@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+/>
 <title>Comparing Unlike Fraction — Practice & Test (2–12)</title>
 
 <!-- === xAPI / SLS base (SET TO YOUR REQUESTED ACTIVITY ID, UNCHANGED) === -->
@@ -28,10 +31,10 @@
   function clearAllForActivity(){
     try {
       const prefixes = [
-        `${ACTIVITY_ID}`,                          // exact + namespaced ACTIVITY_ID / ACTIVITY_ID::*
-        `sls_scope::${ACTIVITY_ID}`,               // legacy scope key
-        `UFCO-firstSubmit::${ACTIVITY_ID}`,        // first-submit gate
-        `sls_unlike_payload::${ACTIVITY_ID}`       // saved score/feedback payload (any version)
+        `${ACTIVITY_ID}`,
+        `sls_scope::${ACTIVITY_ID}`,
+        `UFCO-firstSubmit::${ACTIVITY_ID}`,
+        `sls_unlike_payload::${ACTIVITY_ID}`
       ];
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const k = localStorage.key(i);
@@ -40,14 +43,12 @@
           localStorage.removeItem(k);
         }
       }
-      // Common session flags (if used)
       sessionStorage.removeItem(`${ACTIVITY_ID}::locked`);
       sessionStorage.removeItem(`${ACTIVITY_ID}::done`);
     } catch(e) {}
     broadcastClear();
   }
 
-  // ALWAYS clear on load, before any hydrate / getState / UI restore
   clearAllForActivity();
 })(window);
 </script>
@@ -63,12 +64,24 @@
     --round: 16px;
 
     --bannerbg:#eff6ff; --bannerborder:#bfdbfe; --bannertext:#1e3a8a;
+
+    /* fluid type helpers */
+    --fs-hero: clamp(18px, 4.5vw, 26px);
+    --fs-h2: clamp(16px, 3.8vw, 19px);
+    --fs-base: clamp(14px, 3.6vw, 17px);
+    --fs-small: clamp(12px, 3.2vw, 14px);
+    --fs-chip: clamp(12px, 3.2vw, 15px);
+    --fs-btn: clamp(13px, 3.6vw, 16px);
+    --fs-relop: clamp(16px, 5vw, 18px);
+    --frac-num: clamp(18px, 6vw, 22px);
+    --frac-den: clamp(15px, 4.8vw, 18px);
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; color:var(--ink);
-    font:17px/1.5 "Comic Sans MS","Comic Neue","Lexend",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    font:var(--fs-base)/1.5 "Comic Sans MS","Comic Neue","Lexend",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
     background:
       radial-gradient( 18rem 18rem at 12% 8%, rgba(249,200,255,.35), transparent 55%),
       radial-gradient( 22rem 22rem at 82% 14%, rgba(255,238,150,.35), transparent 55%),
@@ -80,10 +93,11 @@
   /* Hidden teacher/xAPI panel (present but hidden) */
   .container { background:#fff; padding:10px; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,.08); width:590px; height:470px; overflow:auto; display:none; }
   #xapiBase { display:block; }
-  .center { text-align:center; }
+
   input, select, button { margin:5px; padding:6px; font-size:14px; border:1px solid #ccc; border-radius:4px; }
   button { background-color:#28a745; color:#fff; border:none; cursor:pointer; }
   button:hover { background-color:#218838; }
+
   .output-container { margin-top:10px; padding:5px; border:1px solid #ddd; border-radius:4px; background:#fafafa; overflow:auto; max-height:200px; }
   pre { background:#e9ecef; padding:5px; border-radius:4px; white-space:pre-wrap; word-wrap:break-word; margin:0; overflow-x:auto; }
 
@@ -96,11 +110,11 @@
     backdrop-filter: blur(6px);
     padding:18px 18px 16px; box-shadow: var(--shadow-sm); border-radius:14px;
   }
-  h1{ margin:0 0 6px; font-size:26px; display:flex; align-items:center; gap:.5ch; }
+  h1{ margin:0 0 6px; font-size:var(--fs-hero); display:flex; align-items:center; gap:.5ch; }
   h1::before{ content:"🟣"; filter:saturate(1.2); }
   .heroNote{
     margin-top:8px; border:2px solid var(--bannerborder); background:var(--bannerbg); color:var(--bannertext);
-    border-radius:14px; padding:10px 12px; font-weight:900;
+    border-radius:14px; padding:10px 12px; font-weight:900; font-size:var(--fs-small);
   }
   .bar{ display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px }
   .group{
@@ -108,16 +122,16 @@
     border:2px solid transparent;border-radius:999px;
     background: linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6) border-box;
     padding:8px 12px; box-shadow: var(--shadow-sm);
+    font-size:var(--fs-small);
   }
 
-  /* Prominent pills */
   .tabs{
     margin-left:auto; display:flex; gap:10px; padding:6px; border-radius:999px;
     background:linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg,#a78bfa,#60a5fa) border-box;
     border:2px solid transparent; box-shadow:var(--shadow-sm);
   }
   .tabbtn{
-    border:none; padding:12px 22px; border-radius:999px; font-weight:900; cursor:pointer; font-size:16px;
+    border:none; padding:10px 16px; border-radius:999px; font-weight:900; cursor:pointer; font-size:var(--fs-btn);
     background:#fff; color:var(--ink); box-shadow:0 6px 14px rgba(17,24,39,.08);
   }
   .tabbtn.active{ background:linear-gradient(135deg,#7c3aed,#22d3ee); color:#fff }
@@ -125,14 +139,14 @@
     background:#e5e7eb!important; color:#64748b!important; cursor:not-allowed; filter:grayscale(1);
     border:2px dashed #cbd5e1;
   }
-
   .teacherBtn{
-    margin-left:8px; border:none; padding:10px 14px; border-radius:999px; font-weight:900; cursor:pointer;
+    margin-left:8px; border:none; padding:8px 12px; border-radius:999px; font-weight:900; cursor:pointer;
     background:linear-gradient(135deg,#ef4444,#f59e0b); color:#fff; box-shadow:var(--shadow-sm);
+    font-size:var(--fs-small);
   }
 
   section{margin-top:22px}
-  h2{font-size:19px;margin:0 0 10px}
+  h2{font-size:var(--fs-h2);margin:0 0 10px}
   .card{
     position:relative;
     background: linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg, rgba(124,58,237,.6), rgba(6,182,212,.6)) border-box;
@@ -141,23 +155,28 @@
   }
   .qnum{
     position:absolute; top:8px; left:8px;
-    font-weight:900; font-size:12px; color:#334155;
+    font-weight:900; font-size:11px; color:#334155;
     background:#f1f5f9; border:1px solid #cbd5e1; border-radius:999px; padding:3px 8px;
   }
+
   .compare-row{ display:grid; grid-template-columns: 1fr auto 1fr; gap:14px; align-items:center; }
   .side{display:flex;flex-direction:column;align-items:center;gap:8px}
   .compare-row .side:first-child{ color:#06b6d4; } .compare-row .side:last-child{ color:#f97316; }
-  .frac{ display:inline-grid; grid-template-rows:auto auto; justify-items:center; min-width:84px; padding:6px 10px; border-radius:12px; background: var(--tile); box-shadow: inset 0 -2px 0 rgba(0,0,0,.03); }
-  .frac .num{ border-bottom:3px solid var(--ink); width:100%; text-align:center; font-weight:900; font-size:22px; }
-  .frac .den{ padding-top:2px; font-size:18px; font-weight:800 }
-  .pic{display:block}
 
-  select.relop{ padding:10px 12px; min-width:70px; border:2px solid var(--line); border-radius:12px; background:#fff; font-size:18px; font-weight:800; color:var(--ink); box-shadow: var(--shadow-sm); }
+  .frac{ display:inline-grid; grid-template-rows:auto auto; justify-items:center; min-width:84px; padding:6px 10px; border-radius:12px; background: var(--tile); box-shadow: inset 0 -2px 0 rgba(0,0,0,.03); }
+  .frac .num{ border-bottom:3px solid var(--ink); width:100%; text-align:center; font-weight:900; font-size:var(--frac-num); }
+  .frac .den{ padding-top:2px; font-size:var(--frac-den); font-weight:800 }
+
+  /* make SVG pictorials shrink nicely on phones */
+  .pic{ display:block; width:100%; max-width:132px; height:auto }
+  .tile .pic{ max-width:120px }
+
+  select.relop{ padding:10px 12px; min-width:64px; border:2px solid var(--line); border-radius:12px; background:#fff; font-size:var(--fs-relop); font-weight:800; color:var(--ink); box-shadow: var(--shadow-sm); }
   .result-badge{ font-size:13px; margin-left:8px; display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; border-radius:999px; font-weight:900; }
   .compare-row.correct .result-badge{ background:#dcfce7; color:#166534; }
   .compare-row.incorrect .result-badge{ background:#fee2e2; color:#991b1b; }
 
-  .order-instr{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .order-instr{color:var(--muted);font-size:var(--fs-small);margin-bottom:8px}
   .sortable{
     display:flex; gap:14px; flex-wrap:wrap; min-height:86px; padding:10px;
     border:2px dashed transparent; border-radius:14px;
@@ -171,6 +190,7 @@
     border:2px solid transparent; border-radius:14px; padding:10px 12px;
     display:grid; gap:8px; justify-items:center; min-width:110px;
     box-shadow: var(--shadow); transition: transform .12s ease, box-shadow .12s ease; color:#7c3aed;
+    touch-action: manipulation;
   }
   .tile:hover{ transform: translateY(-2px) rotate(-.2deg); box-shadow: 0 10px 20px rgba(17,24,39,.12); }
   .tile:active{ cursor:grabbing; transform: scale(.98); }
@@ -182,16 +202,18 @@
     padding:10px 14px; border:none; border-radius:12px;
     background: linear-gradient(135deg, #7c3aed, #22d3ee);
     color:#fff; font-weight:900; cursor:pointer; box-shadow: var(--shadow-sm);
+    font-size:var(--fs-btn);
+    touch-action: manipulation;
   }
   .qbtn.secondary{ background: linear-gradient(135deg,#ffffff,#f1f5f9); color:var(--ink); border:2px solid var(--line); }
 
-  .actions{display:flex;gap:14px;align-items:center;margin:22px 0; flex-wrap:wrap}
+  .actions{display:flex;gap:14px;align-items:center;margin:22px 0; flex-wrap:wrap; justify-content:center}
   button.appbtn{
     padding:12px 16px; border:none; border-radius:14px;
     background: linear-gradient(135deg, #7c3aed, #22d3ee);
-    color:#fff; font-weight:900; letter-spacing:.2px; font-size:16px;
+    color:#fff; font-weight:900; letter-spacing:.2px; font-size:var(--fs-btn);
     box-shadow: var(--shadow); transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-    cursor:pointer;
+    cursor:pointer; touch-action: manipulation;
   }
   button.appbtn.secondary{ background: linear-gradient(135deg,#ffffff,#f1f5f9); color:var(--ink); border:2px solid var(--line); }
   button.appbtn[disabled]{ opacity:.5; filter:grayscale(1); cursor:not-allowed; }
@@ -203,47 +225,76 @@
 
   .hidden{display:none !important}
   .scorechip{
-    margin-left:auto; padding:10px 14px; border:2px solid transparent; border-radius:999px;
+    margin-left:auto; padding:8px 10px; border:2px solid transparent; border-radius:999px;
     background: linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg,#34d399,#60a5fa,#f59e0b) border-box;
-    display:flex; gap:14px; font-weight:800; box-shadow: var(--shadow-sm);
+    display:flex; gap:10px; font-weight:800; box-shadow: var(--shadow-sm);
+    font-size:var(--fs-chip); flex-wrap:wrap;
   }
   .scorechip small{color:var(--muted);font-weight:700}
 
   .banner{ display:none; margin:14px 0; padding:12px 16px; border-radius:14px; font-weight:900;
-           background:#ecfeff; border:2px solid #67e8f9; color:#155e75; }
+           background:#ecfeff; border:2px solid #67e8f9; color:#155e75; font-size:var(--fs-small); }
   .banner.show{display:block}
 
   #miniSLS{
     position:sticky; bottom:12px; margin-top:12px;
     background:var(--bannerbg); border:1px solid var(--bannerborder);
     border-radius:10px; padding:8px 10px; color:var(--bannertext);
-    font-size:.8rem; font-weight:700; line-height:1.3;
+    font-size:var(--fs-small); font-weight:700; line-height:1.3;
   }
   #statusBadge{
-    display:none; margin:10px 0; font-size:.8rem; font-weight:700; line-height:1.3;
+    display:none; margin:10px 0; font-size:var(--fs-small); font-weight:700; line-height:1.3;
     background:#0f172a; color:#fff; padding:8px 12px; border-radius:12px; text-align:center;
   }
-  footer{ margin-top:10px;color:var(--muted);font-size:12px; display:flex;justify-content:space-between;align-items:center }
+  footer{ margin-top:10px;color:var(--muted);font-size:11px; display:flex;justify-content:space-between;align-items:center; gap:8px }
   footer::before{ content:"🎉"; margin-right:.5ch; }
 
   /* ==== Practice Complete Modal ==== */
   .modalOverlay{
     position:fixed; inset:0; background:rgba(15,23,42,.45);
     display:none; align-items:center; justify-content:center; z-index:50;
+    padding:16px;
   }
   .modal{
     width:min(92vw,540px);
     background:#fff; border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.25);
     border:2px solid #c7d2fe; padding:18px;
   }
-  .modal h3{ margin:0 0 8px; font-size:20px }
-  .modal p{ margin:6px 0 14px; color:#334155 }
+  .modal h3{ margin:0 0 8px; font-size:clamp(18px, 4.4vw, 20px) }
+  .modal p{ margin:6px 0 14px; color:#334155; font-size:var(--fs-base) }
   .modal .row{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap }
   .btn{
     padding:10px 14px; border:none; border-radius:12px; font-weight:900; cursor:pointer;
     background:linear-gradient(135deg,#7c3aed,#22d3ee); color:#fff; box-shadow:var(--shadow-sm);
+    font-size:var(--fs-btn);
   }
-  .btn.secondary{ background:linear-gradient(135deg,#ffffff,#f1f5f9); color:var(--ink); border:2px solid var(--line); }
+  .btn.secondary{ background:linear-gradient(135deg,#ffffff,#f1f5f9); color:var(--ink); border:2px solid #cbd5e1; }
+
+  /* ========= MOBILE LAYOUT TWEAKS ========= */
+  @media (max-width: 768px){
+    body{ padding:12px }
+    .app{ padding:12px; border-radius:14px }
+    header{ padding:14px }
+    .bar{ gap:10px }
+    .tabs{ gap:8px; padding:4px }
+    .tabbtn{ padding:8px 14px }
+    .teacherBtn{ padding:6px 10px }
+    .card{ padding:12px }
+    .qnum{ font-size:10px }
+    .actions{ margin:16px 0 }
+  }
+
+  @media (max-width: 600px){
+    /* stack the compare row for comfortable one-hand use */
+    .compare-row{ display:flex; flex-direction:column; align-items:center; gap:10px }
+    .frac{ min-width:auto }
+    .tile{ min-width:96px; padding:8px 10px }
+    .sortable{ gap:10px; padding:8px; min-height:72px }
+    .scorechip{ justify-content:center }
+    .group{ padding:6px 10px }
+    .heroNote{ padding:8px 10px }
+    footer{ flex-direction:column }
+  }
 </style>
 </head>
 <body>
@@ -399,12 +450,11 @@
 </div>
 
 <script>
-/* ===================== Full App Script ===================== */
+/* ===================== Full App Script (unchanged logic) ===================== */
 (function(){
-  /* ---------- Persistence/xAPI keys (scoped to Activity) ---------- */
   const APP_SCOPE = String(window.ACTIVITY_ID || location.href);
-  const PAYLOAD_KEY = `sls_unlike_payload::${APP_SCOPE}::v1`;   // persistent score+feedback for SLS replay
-  const FIRST_KEY   = `UFCO-firstSubmit::${APP_SCOPE}`;          // first-submit gate per activity
+  const PAYLOAD_KEY = `sls_unlike_payload::${APP_SCOPE}::v1`;
+  const FIRST_KEY   = `UFCO-firstSubmit::${APP_SCOPE}`;
 
   function pushToXAPI(score, feedback){
     try {
@@ -423,7 +473,6 @@
     } catch(e) {}
   }
 
-  // UPDATED: accept hiddenMarks (teacher-only detail; not pushed to SLS)
   function writePayload(score, feedback, hiddenMarks){
     try {
       localStorage.setItem(PAYLOAD_KEY, JSON.stringify({ score, feedback, hiddenMarks, t: Date.now() }));
@@ -434,7 +483,7 @@
   }
   function syncFromLocalToXAPI(){
     const p = readPayload(); if (!p) return;
-    pushToXAPI(p.score, p.feedback); // do NOT show hiddenMarks to users
+    pushToXAPI(p.score, p.feedback);
   }
 
   window.addEventListener('load', syncFromLocalToXAPI);
@@ -442,7 +491,6 @@
   window.addEventListener('focus', syncFromLocalToXAPI);
   window.addEventListener('storage', (e)=>{ if (e.key === PAYLOAD_KEY && e.newValue) syncFromLocalToXAPI(); });
 
-  /* ===================== Fraction engine (Practice + Test) ===================== */
   const DEN_MIN = 2, DEN_MAX = 12;
   const PRACTICE_COUNTS = { cmp:4, asc:4, desc:4 };
   const TEST_COUNTS     = { cmp:4, asc:4, desc:4 };
@@ -462,11 +510,11 @@
       <span class="den">${den}</span>
     </span>`;
 
-  let picType='bar'; // will be kept in sync with UI
+  let picType='bar';
   function barSVG(num, den){
     const W=132, H=22, r=4, cellW=W/den;
     let lines=''; for(let i=1;i<den;i++){ const x=(i*cellW).toFixed(2); lines+=`<line x1="${x}" y1="1" x2="${x}" y2="${H-1}" stroke="currentColor" stroke-width="1"/>`; }
-    const w=cellW*num, fillRect=num>0?`<rect x="0" y="0" width="${w}" height="${H}" fill="currentColor" opacity="0.25"/>`:'';
+    const w=cellW*num, fillRect=num>0?`<rect x="0" y="0" width="${w}" height="${H}" fill="currentColor" opacity="0.25"/>`:''; 
     return `<svg class="pic" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">
       ${fillRect}<rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="${r}" ry="${r}" fill="none" stroke="currentColor" stroke-width="1"/>${lines}
     </svg>`;
@@ -517,7 +565,6 @@
     }
   }
 
-  /* ---------- Card makers ---------- */
   function makeCompareRow(n1,d1,n2,d2, includePics=true, forTest=false, qNumber=null){
     const row=document.createElement('div'); row.className='card compare-row'; row.dataset.kind='cmp'; row.dataset.answer=rel(n1,d1,n2,d2);
     if(qNumber!==null){ const qn=document.createElement('div'); qn.className='qnum'; qn.textContent=`Q${qNumber}/12`; row.appendChild(qn); }
@@ -596,13 +643,11 @@
     return card;
   }
 
-  /* ---------- Practice/Test containers ---------- */
   const practiceCompare=document.getElementById('practiceCompare');
   const practiceAsc=document.getElementById('practiceAsc');
   const practiceDesc=document.getElementById('practiceDesc');
   const testList=document.getElementById('testList');
 
-  /* ---------- Build functions ---------- */
   function buildPractice(){
     const usedCmp=new Set(), usedTriA=tripleUsed(), usedTriD=tripleUsed();
     practiceCompare.innerHTML=''; practiceAsc.innerHTML=''; practiceDesc.innerHTML='';
@@ -629,7 +674,6 @@
     hideBanners();
   }
 
-  /* ---------- Pictorial toggles (robust) ---------- */
   const togglePics=document.getElementById('togglePics');
   const picTypeSel=document.getElementById('picType');
   const practiceRoot=document.getElementById('practiceSec');
@@ -668,17 +712,14 @@
       refreshAllPracticePictorials();
     });
   }
-  // Wrap buildPractice so pictorials always refresh after rebuilds
   const _origBuildPractice = buildPractice;
   buildPractice = function() {
     _origBuildPractice();
     afterBuildPractice_applyPictorials();
   };
 
-  /* ---------- Grading helpers ---------- */
   function arraysEqual(a,b){ return a.length===b.length && a.every((v,i)=>v===b[i]); }
 
-  // Practice grading (instant per-question feedback)
   function gradeCompareCard(row){
     const correct=row.dataset.answer; const sel=row.querySelector('select.relop'); const chosen=sel.value; const badge=row.querySelector('span.result-badge');
     row.classList.remove('correct','incorrect'); badge.textContent='';
@@ -694,7 +735,6 @@
     refreshPracticeTotals();
   }
 
-  /* ---------- Tabs / lock gate ---------- */
   const tabPractice=document.getElementById('tabPractice');
   const tabTest=document.getElementById('tabTest');
   const practiceSec=document.getElementById('practiceSec');
@@ -727,7 +767,7 @@
   }
   function enforceTestLock(unlocked){
     setTestLocked(!unlocked);
-    if(unlocked) maybeShowPracticeModal(); // show popup right when unlocked
+    if(unlocked) maybeShowPracticeModal();
   }
 
   tabPractice.addEventListener('click', showPractice);
@@ -739,9 +779,7 @@
     showTest();
   });
 
-  // Track answered (for display only)
   function markAnswered(el){
-    const card = el.classList.contains('card') ? el : el.closest('card');
     const realCard = el.classList.contains('card') ? el : el.closest('.card');
     if(realCard && !realCard.dataset.answered){
       realCard.dataset.answered='1';
@@ -753,7 +791,6 @@
     document.getElementById('tAns').textContent = String(answered);
   }
 
-  // Final grading for Test (unanswered ⇒ wrong) + detailed feedback
   function computeTestScoreAndTypes(){
     let correctCmp=0, correctAsc=0, correctDesc=0;
     document.querySelectorAll('#testSec .compare-row').forEach(row=>{
@@ -779,7 +816,6 @@
     return { score, correctCmp, correctAsc, correctDesc, wrongCmp, wrongAsc, wrongDesc };
   }
 
-  // Teacher-only internal tail (kept for storage, not shown to users)
   function feedbackMarksTail(){
     const parts=[];
     const cmpRows=[...testList.querySelectorAll('.compare-row')];
@@ -795,12 +831,10 @@
     return parts.join(' | ');
   }
 
-  // NEW: build hidden marks string for teacher reference only
   function buildHiddenMarks(stats){
     return feedbackMarksTail();
   }
 
-  // UPDATED: Build SLS-visible feedback WITHOUT question numbers
   function buildTeacherFeedback(score12, stats){
     const { correctCmp, correctAsc, correctDesc, wrongCmp, wrongAsc, wrongDesc } = stats;
     const byType = `Compare ${correctCmp}C/${wrongCmp}W | Order↑ ${correctAsc}C/${wrongAsc}W | Order↓ ${correctDesc}C/${wrongDesc}W`;
@@ -818,7 +852,6 @@
   function hasPostedFirstSubmit(){ try{ return localStorage.getItem(FIRST_KEY)==='1'; }catch(e){ return false; } }
   function lockFirstSubmit(){ try{ localStorage.setItem(FIRST_KEY,'1'); }catch(e){} }
 
-  // UPDATED: accept hiddenMarks, store them locally, but only push clean feedback to SLS
   function postFirstSubmitIfNeeded(score12, feedback, hiddenMarks){
     if(hasPostedFirstSubmit()) return false;
     writePayload(score12, feedback, hiddenMarks);
@@ -834,8 +867,8 @@
     const score = stats.score;
     if(tTotEl) tTotEl.textContent=String(score);
     if(miniScoreEl) miniScoreEl.textContent=String(score);
-    const feedback = buildTeacherFeedback(score, stats);     // no question numbers
-    const hiddenMarks = buildHiddenMarks(stats);             // teacher-only detail
+    const feedback = buildTeacherFeedback(score, stats);
+    const hiddenMarks = buildHiddenMarks(stats);
     const justPosted = postFirstSubmitIfNeeded(score, feedback, hiddenMarks);
     if(justPosted) firstAttemptBanner.classList.add('show');
     if(score===12){ congratsBanner.classList.add('show'); }
@@ -846,8 +879,7 @@
     hideBanners(); buildTest(); document.getElementById('tTot').textContent='0'; miniScoreEl.textContent='0';
   });
 
-  /* ---------- Practice controls + lock gating ---------- */
-  let practiceModalShown = false; // only once per practice set
+  let practiceModalShown = false;
   const pm = document.getElementById('practiceModal');
   const pmGo = document.getElementById('pmGoTest');
   const pmLater = document.getElementById('pmLater');
@@ -864,7 +896,7 @@
   pmGo.addEventListener('click', ()=>{
     if (!tabTest.classList.contains('locked')){
       showTest();
-      const firstQ = testSec.querySelector('.card');
+      const firstQ = document.getElementById('testSec').querySelector('.card');
       if(firstQ){ firstQ.scrollIntoView({behavior:'smooth', block:'start'}); firstQ.tabIndex = -1; firstQ.focus({preventScroll:true}); }
     }
     hidePracticeModal();
@@ -879,22 +911,21 @@
     document.getElementById('pAsc').textContent=pAsc;
     document.getElementById('pDesc').textContent=pDesc;
     document.getElementById('pTot').textContent=total;
-    enforceTestLock(total===12);  // lock until 12/12
+    enforceTestLock(total===12);
   }
 
   document.getElementById('btnPracticeNew').addEventListener('click', ()=>{
-    buildPractice(); // wrapper ensures pictorials refresh
+    buildPractice();
     document.querySelectorAll('#practiceSec .correct,#practiceSec .incorrect').forEach(el=>el.classList.remove('correct','incorrect'));
     document.querySelectorAll('#practiceSec .result-badge').forEach(b=>b.textContent='');
     document.getElementById('pCmp').textContent='0';
     document.getElementById('pAsc').textContent='0';
     document.getElementById('pDesc').textContent='0';
     document.getElementById('pTot').textContent='0';
-    practiceModalShown = false;           // reset modal for new set
-    enforceTestLock(false);               // re-lock Test
+    practiceModalShown = false;
+    enforceTestLock(false);
   });
 
-  /* ---------- Teacher visible New Session — Clear ---------- */
   document.getElementById('teacherClear').addEventListener('click', ()=>{
     if(!confirm('Start a NEW SESSION? This clears local first-submit payload and reloads with ?newSession=1.')) return;
     try{
@@ -906,29 +937,23 @@
     location.href = url.toString();
   });
 
-  /* ---------- Init ---------- */
-  buildPractice();              // (wrapped for pictorials)
+  buildPractice();
   buildTest();
-  // Set initial pictorial state and bindings
   window.addEventListener('load', ()=> {
-    // ensure initial picType matches UI
     const sel = document.getElementById('picType');
     picType = (sel && sel.value === 'pie') ? 'pie' : 'bar';
     afterBuildPractice_applyPictorials();
   });
 
-  enforceTestLock(false); // start locked (until Practice hits 12/12)
+  enforceTestLock(false);
   showPractice();
 
-  /* NOTE: Removed the late NewSessionClearKit.init(...) because auto-clear now runs in <head> before hydrate */
-
-  /* Hidden Send/Save & Clear mimic reference */
   const saveStoreBtn = document.getElementById('save-store');
   if(saveStoreBtn){
     saveStoreBtn.addEventListener('click', ()=>{
       const sVal = Number(document.getElementById('score-input').value || 0);
       const fVal = String(document.getElementById('feedback-input').value || "");
-      writePayload(sVal, fVal, undefined); // keep signature consistent
+      writePayload(sVal, fVal, undefined);
       pushToXAPI(sVal, fVal);
     });
   }
@@ -937,12 +962,12 @@
     clearBtn.addEventListener('click', ()=>{
       document.getElementById('score-input').value = '';
       document.getElementById('feedback-input').value = '';
-      writePayload(0, '', undefined); // keep signature consistent
+      writePayload(0, '', undefined);
       pushToXAPI(0, '');
     });
   }
 
-})(); // end IIFE
+})(); 
 </script>
 </body>
 </html>
